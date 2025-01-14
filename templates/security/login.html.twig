@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Abir's - Connexion{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+    <nav class="navbar">
+        <div class="logo">
+            <a href="#">Abir's</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">À propos</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="background-container"> 
+        <div class="left-background">
+            <img src="{{ asset('images/IMAGE 3.jpeg') }}" alt="salon" class="background-image-left">
+        </div>
+        <div class="right-background">
+            <img src="{{ asset('images/image2.jpeg') }}" alt="affiche" class="background-image-right">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="login-box">
+            <div class="logo">
+                <img src="{{ asset('images/logo.png') }}" alt="logo">
+            </div>
+            <form action="{{ path('app_login') }}" method="post" autocomplete="off">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <input type="text" name="email" id="email" placeholder="Email" required autofocus autocomplete="off">
+                <input type="password" name="password" id="password" placeholder="Mot de passe" required autocomplete="off">
+                <button type="submit">Se connecter</button>
+            </form>
+            <div class="footer">
+                <p>Vous n'avez pas de compte ? <a href="{{ path('app_register') }}">Inscrivez-vous</a></p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="login-footer">
+        <p>&copy; 2025 Abir's Salon. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        // Removed JavaScript that clears fields on page load and refreshes the page.
+    </script>
+{% endblock %}

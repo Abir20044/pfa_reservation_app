@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Abir's - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h2>Book your appointment</h2>
+    </header>
+    <main>
+        <section id="services">
+            <h2>Services Proposés</h2>
+            <div id="service-list">
+                <img src="{{ asset('images/price list.png') }}" alt="Tous les services" class="service-group-image">
+                <button id="showBookingButton">Reservation</button>
+            </div>
+        </section>
+        <section id="booking" style="display: none;">
+            <h2>Réserver un Rendez-vous</h2>
+            <form id="booking-form" action="{{ path('app_reservation_create') }}" method="POST">
+                <label for="client-name">Nom du Client :</label>
+                <input type="text" id="client-name" name="client_name" value="{{ app.user.fullName }}" required readonly>
+                
+                <label for="service-select">Service :</label>
+                <select id="service-select" name="service_id" required>
+                    <option value="">Choisissez un service</option>
+                    {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="date">Date :</label>
+                <input type="date" id="date" name="date" required>
+
+                <label for="time">Heure :</label>
+                <select id="time" name="time_slot_id" required>
+                    <option value="">Choisissez une heure</option>
+                </select>
+
+                <button type="submit">Réserver</button>
+            </form>
+            <div id="reservation-message" style="display: none;"></div>
+        </section>
+
+        <section id="my-appointments" style="display: none;">
+            <h2>Mes Rendez-vous</h2>
+            <ul id="appointment-list">
+                {% for reservation in reservations %}
+                    <li>
+                        Service : {{ reservation.service.name }} - 
+                        Date : {{ reservation.timeSlot.startTime|date('d/m/Y H:i') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <div class="logout-container">
+        <a href="{{ path('app_logout') }}" class="logout-btn">Log Out</a>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/dashboard.js') }}"></script>
+{% endblock %}

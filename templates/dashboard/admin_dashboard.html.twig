@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Abir's</title>
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h2>Admin Dashboard</h2>
+    </header>
+    <main>
+        <section id="users">
+            <h2>Utilisateurs</h2>
+            <div class="user-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Rôle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.lastName }}</td>
+                                <td>{{ user.firstName }}</td>
+                                <td>{{ user.roles|join(', ') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="reservations">
+            <h2>Réservations</h2>
+            <div class="reservation-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                            <tr>
+                                <td>{{ reservation.client.email }}</td>
+                                <td>{{ reservation.service }}</td>
+                                <td>{{ reservation.date ? reservation.date|date('Y-m-d H:i') : '' }}</td>
+                                <td>{{ reservation.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <div class="logout-container">
+        <a href="{{ path('app_logout') }}" class="logout-btn">Déconnexion</a>
+    </div>
+</body>
+</html>

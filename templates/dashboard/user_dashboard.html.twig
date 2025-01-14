@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abir's</title>
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h2>Book your appointment</h2>
+    </header>
+    <main>
+        <section id="services">
+            <h2>Services Proposés</h2>
+            <div id="service-list">
+                <img src="{{ asset('images/price list.png') }}" alt="Tous les services" class="service-group-image">
+                <button id="showBookingButton">Reservation</button>
+            </div>
+        </section>
+        <section id="booking" style="display: none;">
+            <h2>Réserver un Rendez-vous</h2>
+            <form id="booking-form">
+                <label for="client-name">Nom du Client :</label>
+                <input type="text" id="client-name" value="{{ app.user.email }}" required readonly>
+                <label for="service-select">Service :</label>
+                <input type="text" id="service-select" placeholder="Entrez un service" required>
+                <label for="date">Date :</label>
+                <input type="date" id="date" required>
+                <button type="submit">Réserver</button>
+            </form>
+            <div id="reservation-message" style="display: none; color: green; font-weight: bold;"></div>
+        </section>
+    </main>
+    <div class="logout-container">
+        <a href="{{ path('app_logout') }}" class="logout-btn">Log Out</a>
+    </div>
+
+    <script>
+        document.getElementById('showBookingButton').addEventListener('click', function() {
+            document.getElementById('booking').style.display = 'block';
+            this.style.display = 'none';
+        });
+
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+        function displayAppointments() {
+            const appointmentList = document.getElementById('appointment-list');
+            if (appointmentList) {
+                appointmentList.innerHTML = '';
+                appointments.forEach(appointment => {
+                    const li = document.createElement('li');
+                    li.textContent = `${appointment.client} a réservé ${appointment.service} pour le ${appointment.date}`;
+                    appointmentList.appendChild(li);
+                });
+            }
+        }
+
+        function appointmentExists(service, date) {
+            return appointments.some(appointment => 
+                appointment.service === service && appointment.date === date
+            );
+        }
+
+        document.querySelector('.service-group-image').addEventListener('click', function() {
+            const service = prompt("Entrez le service que vous souhaitez réserver (par exemple, Coupe de cheveux, Coloration, Manucure, etc.)");
+            if (service) {
+                document.getElementById('service-select').value = service;
+            }
+        });
+
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const clientName = document.getElementById('client-name').value;
+            const service = document.getElementById('service-select').value;
+            const date = document.getElementById('date').value;
+
+            if (!service) {
+                alert("Veuillez sélectionner un service.");
+                return;
+            }
+
+            if (appointmentExists(service, date)) {
+                alert("Ce créneau est déjà réservé pour ce service. Veuillez choisir une autre date ou service.");
+                return;
+            }
+
+            const newAppointment = { client: clientName, service: service, date: date };
+            appointments.push(newAppointment);
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            
+            document.getElementById('booking-form').reset();
+            document.getElementById('service-select').value = '';
+            displayAppointments();
+
+            const messageDiv = document.getElementById('reservation-message');
+            messageDiv.textContent = `Réservation réussie ! Votre rendez-vous pour le service ${service} a été pris pour le ${date}.`;
+            messageDiv.style.display = 'block';
+
+            setTimeout(function() {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        });
+
+        window.onload = function() {
+            displayAppointments();
+        };
+    </script>
+</body>
+</html>
